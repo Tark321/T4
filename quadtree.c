@@ -626,3 +626,15 @@ QtInfo getInfoByIdQt(QuadTree qt, char* chave)
 
     return getInfoById(qt, tree->raiz, chave);
 }
+
+// void printNosQt(StructTree* qt, StructNode* no, FILE* svg, double* x, double y, Lista ant)
+// {
+//     if( no == NULL)
+//     {
+//         double aux = *x;
+//         if(ant != NULL)
+//         {
+//             insert(ant, criaPonto(aux, y-10))
+//         }
+//     }
+// }

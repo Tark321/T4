@@ -767,7 +767,63 @@ void m(FILE* saida, QuadTree treeObjeto[], char cep[])
     removeList(lista, NULL);
 }
 
-// void dm(FILE* saida, QuadTree treeObjeto[], Lista listaObjeto[], Lista listaQry[], HashTable hash[], char cpf[])
+// void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], char cpf[])
 // {
-    
+//     Info pessoa = getValue(hash[2], cpf);
+//     Info endereco = getValue(hash[3], cpf);
+
+//     if(pessoa == NULL || endereco == NULL)
+//     {
+//         fprintf(saida, "NAO HA INFORMACOES PARA ESTE CPF\n");
+//         printf("CPF INVALIDO\n");
+//         return;
+//     }
+
+
+//     char texto [1150];
+//     sprintf(texto, "CPF: %s Nome: %s CEP: %s Face: %s Num: %lf", getAddressCpf(endereco), getPessoaNome(pessoa),
+//     getAddressCep(endereco), getAddressFace(endereco), getAddressNum(endereco));
+
+//     Texto text = criaTexto("0", getPontoX(getAddressPonto(endereco)), 0, "black", "black", texto);
+//     insert(listaQry[4], text);
+// }
+
+// void de(QuadTree treeObjeto[], FILE* saida, Lista listaObjeto[], HashTable hash[], char cnpj[])
+// {
+//     QtNo no;
+//     Info info;
+
+//     no = getNoById(treeObjeto[9], cnpj);
+
+//     if(no == NULL)
+//     {
+//         fprintf(saida,"ESTABELECIMENTO COMERCIAL INEXISTENTE\n");
+//         printf("COMERCIO INEXISTENTE\n");
+//         return;
+//     }
+
+//     info = getInfoQt(treeObjeto[9], no);
+
+//     fprintf(saida, "Nome: %s CPF: %s\nCNPJ: %s\nFace: %s Num: %lf CODT: %s\n", getComercioNome(info),
+//     getComercioCpf(info), getComercioCnpj(info), getComercioFace(info), getComercioNum(info), getComercioCodt(info));
+
+// }
+
+// void mud(QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], FILE* saida, char cpf[], char cep[], char face[], char complemento[], double num)
+// {
+//     Info pessoa = getValue(hash[2], cpf);
+//     Info endereco = getValue(hash[3], cpf);
+
+//     if(pessoa == NULL || endereco == NULL)
+//     {
+//         fprintf(saida, "MORADOR NAO ENCONTRADO\n");
+//         printf("MORADOR NAO ENCONTRADO\n");
+//         return;
+//     }
+
+//     fprintf(saida, "DADOS DO MORADOR\nNome: %s %s CPF: %s\nNascimento: %s Sexo: %s\n", getPessoaNome(pessoa),
+//     getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaSexo(pessoa), getPessoaSexo(pessoa));
+//     fprintf(saida, "ENDERECO ANTIGO\nCEP: %s\nFace: %s Num:%lf Complemento: %s", getAddressCep(endereco),
+//     getAddressFace(endereco), getAddressNum(endereco), getAddressComplemento(endereco));
+//     fprintf(saida, "ENDERECO ATUAL\nCEP: %s\nFace: %s Num: %lf Complemento: %s", cep, face, num, complemento);
 // }

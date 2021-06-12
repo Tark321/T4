@@ -3,7 +3,7 @@
 #include <string.h>
 #include "lerGeo.h"
 
-void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[], Lista listaObjeto[], HashTable hashT[])
+void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[], Lista listaObjeto[], HashTable hash[])
 {
     FILE *geo;
     Info info;
@@ -194,9 +194,9 @@ void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[], Lista lista
     for(No no = getFirst(listaObjeto[3]); no != NULL; no = getNext(no))
     {
         info = getInfo(no);
-        insertHTable(hashT[0], getQuadraCep(info), info);
+        insertHTable(hash[0], getQuadraCep(info), info);
     }
-
+    
     desenhaGeoSvg(arqSvg, treeObjeto, NULL);
 
     finalizaSvg(arqSvg);
@@ -204,3 +204,4 @@ void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[], Lista lista
     fclose(geo);
 
 }
+

@@ -172,8 +172,7 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
         return NULL;
     }
 
-    No primeiro = getFirst(list);
-    No i;
+    No primeiro = getFirst(list), i;
     Info aux = getInfo(primeiro);
     Ponto p1;
     Ponto p2;
@@ -194,14 +193,13 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
     quickSortList(list, getNext(primeiro), getLast(list), getPonto, swap);
 
     Lista auxL = create();
-    insert(auxL, getInfo(primeiro));
 
     for(i = getNext(getNext(primeiro)); i != NULL; i = getNext(i))
     {
         p1 = getPonto(getInfo(i));
         p2 = getPonto(getInfo(getPrevious(i)));
 
-        if(orientacao(getPonto(getInfo(primeiro)), p2, p1) != 0)
+        if(orientacao(getPonto(getInfo(primeiro)),p2, p1) != 0)
         {
             insert(auxL, getInfo(getPrevious(i)));
         }
@@ -209,7 +207,6 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
 
     insert(auxL, getInfo(getLast(list)));
     int j = getTamanhoLista(auxL);
-
     if (j < 3)
     {
         removeList(auxL, NULL);
@@ -218,16 +215,18 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
 
     Lista envConv = create();
 
-    for(i = getFirst(auxL), j = 0; j < 3; j++, i = getNext(i))
+    i = getFirst(auxL);
+
+    for(j = 0; j < 3; j++)
     {
         insert(envConv, getPonto(getInfo(i)));
+        i = getNext(i);
     }
-
     while(i != NULL)
     {
-        while (getTamanhoLista(envConv) > 1 && orientacao(getInfo(getPrevious(getLast(envConv))), getInfo(getLast(envConv)), getPonto(getInfo(i))) != 1)
+        while(getTamanhoLista(envConv) > 1 && orientacao(getInfo(getPrevious(getLast(envConv))), getInfo(getLast(envConv)), getPonto(getInfo(i))) != 1)
         {
-            removerNo(envConv, getLast(envConv), 0);
+            removerNo(envConv,getLast(envConv), 0);
         }
         insert(envConv, getPonto(getInfo(i)));
         i = getNext(i);
@@ -237,35 +236,6 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
     return envConv;    
 }
 
-void shellSort(double *vet, int size)
-{
-    int i;
-    int j;
-    int h = 1;
-    double value;
-
-    while(h < size) 
-    {
-        h = 3*h+1;
-    }
-    while (h > 0) 
-    {
-        for(i = h; i < size; i++) 
-        {
-            value = vet[i];
-            j = i;
-
-            while (j > h-1 && value <= vet[j - h]) 
-            {
-                vet[j] = vet[j - h];
-                j = j - h;
-            }
-            vet[j] = value;
-        }
-        h = h/3;
-    }
-}
-
 void balancearQt(QuadTree qt, Lista ListaObjeto, Ponto (*getPonto)(void*), void (*swap)(void*, void*))
 {   
     No i;
@@ -273,11 +243,6 @@ void balancearQt(QuadTree qt, Lista ListaObjeto, Ponto (*getPonto)(void*), void 
     Ponto p;
     Lista envCov;
     Pilha pilha = criaPilha();
-
-    if(getPonto ==  NULL)
-    {
-        getPonto = defaultGetPonto;
-    }
 
     while(getTamanhoLista(ListaObjeto) > 3)
     {
@@ -319,4 +284,32 @@ void balancearQt(QuadTree qt, Lista ListaObjeto, Ponto (*getPonto)(void*), void 
 
     free(pilha);
     
+}
+void shellSort(double *vet, int size)
+{
+    int i;
+    int j;
+    int h = 1;
+    double value;
+
+    while(h < size) 
+    {
+        h = 3*h+1;
+    }
+    while (h > 0) 
+    {
+        for(i = h; i < size; i++) 
+        {
+            value = vet[i];
+            j = i;
+
+            while (j > h-1 && value <= vet[j - h]) 
+            {
+                vet[j] = vet[j - h];
+                j = j - h;
+            }
+            vet[j] = value;
+        }
+        h = h/3;
+    }
 }

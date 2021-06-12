@@ -20,6 +20,7 @@
 #include "textoNumerico.h"
 #include "posto.h"
 #include "hashTable.h"
+#include "comercio.h"
 
 void o(char j[], char k[], FILE* saida, QuadTree treeObjeto[], Lista listasQry[]);
 

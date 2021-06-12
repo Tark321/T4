@@ -14,7 +14,6 @@
 #include "quadtree.h"
 #include "pilha.h"
 #include "auxiliar.h"
-#include "hashTable.h"
 
 
 /*
@@ -22,6 +21,6 @@
 *precisa do nome do arquivo e a lista para salvar as informacoes
 *não retorna nada
 */
-void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[],Lista listaObjeto[], HashTable hashT[]);
+void lerGeo(char arqGeo[], char nomeSvgGeo[], QuadTree treeObjeto[],Lista listaObjeto[], HashTable hash[]);
 
 #endif
