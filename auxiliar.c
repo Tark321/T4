@@ -199,7 +199,7 @@ Lista envoltoria(Lista list,  Ponto (*getPonto)(Info), void (*swap)(Info, Info))
         p1 = getPonto(getInfo(i));
         p2 = getPonto(getInfo(getPrevious(i)));
 
-        if(orientacao(getPonto(getInfo(primeiro)),p2, p1) != 0)
+        if(orientacao(getPonto(getInfo(primeiro)),p1, p2) != 1)
         {
             insert(auxL, getInfo(getPrevious(i)));
         }
@@ -263,7 +263,11 @@ void balancearQt(QuadTree qt, Lista ListaObjeto, Ponto (*getPonto)(void*), void 
                 }
             }
             removeList(envCov, 0);
-        }     
+        }   
+        else
+        {
+            break;
+        }  
     }
 
     for(i = getFirst(ListaObjeto); i != NULL; i = getNext(i))

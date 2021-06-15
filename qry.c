@@ -252,7 +252,7 @@ void delf(QuadTree treeObjeto[], char j[], FILE* saida)
 }
 
 void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, Lista listasQry[])
-{
+{printf("entrou no dq\n");
     Ponto p;
     Info info;
     double x;
@@ -293,7 +293,7 @@ void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, List
             break;
     }
 
-   if(achou == 1)
+   if(achou != 1)
     {
         fprintf(saida, "\nOBJETO NAO ENCONTRADO\n");
         return;
@@ -303,7 +303,7 @@ void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, List
     node = getFirst(lista);
 
     while(node != NULL)
-    {
+    {printf("entrou no while\n");
         info = getInfoQt(treeObjeto[3], getInfo(node));
         p = getQuadraPonto(info);
         w = getQuadraW(info);
@@ -335,7 +335,7 @@ void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, List
     Circulo c3 = criaCirculo("0", 7, x, y, "2", "yellow", "none");
     insert(listasQry[3], c3);
 
-    removeList(lista, 0);
+    removeList(lista, NULL);
 
 }
 
@@ -350,7 +350,7 @@ void del (QuadTree treeObjeto[], char id[], FILE* saida, Lista listasQry[])
         Linha lin = criaLinha(getQuadraX(q)+getQuadraW(q)/2, (getQuadraY(q)+getQuadraH(q)/2), getQuadraX(q)+getQuadraW(q)/2, 0, "black");
         insert(listasQry[2], lin);
 
-        Texto text = criaTexto(0, getQuadraX(q)+getQuadraW(q)/2, 0, "black", "black", getQuadraCep(q));
+        Texto text = criaTexto("0", getQuadraX(q)+getQuadraW(q)/2, 0, "black", "black", getQuadraCep(q));
         insert(listasQry[4], text);
 
         desalocaQuadraPonto(q);
@@ -364,7 +364,7 @@ void del (QuadTree treeObjeto[], char id[], FILE* saida, Lista listasQry[])
         Linha lin = criaLinha(getHidranteX(h), getHidranteY(h), getHidranteX(h), 0, "black");
         insert(listasQry[2], lin);
 
-        Texto text = criaTexto(0, getHidranteX(h), 0, "black", "black", getHidranteId(h));
+        Texto text = criaTexto("0", getHidranteX(h), 0, "black", "black", getHidranteId(h));
         insert(listasQry[4], text);
 
         desalocaHidraPonto(h);
@@ -378,7 +378,7 @@ void del (QuadTree treeObjeto[], char id[], FILE* saida, Lista listasQry[])
         Linha lin = criaLinha(getSemaforoX(s), getSemaforoY(s), getSemaforoX(s), 0, "black");
         insert(listasQry[2], lin);
 
-        Texto text = criaTexto(0, getSemaforoX(s), 0, "black", "black", getSemaforoId(s));
+        Texto text = criaTexto("0", getSemaforoX(s), 0, "black", "black", getSemaforoId(s));
         insert(listasQry[4], text);
 
         desalocaSemaPonto(s);
@@ -392,7 +392,7 @@ void del (QuadTree treeObjeto[], char id[], FILE* saida, Lista listasQry[])
         Linha lin = criaLinha(getRadiobaseX(rb), getRadiobaseY(rb), getRadiobaseX(rb), 0, "black");
         insert(listasQry[2], lin);
 
-        Texto text = criaTexto(0, getRadiobaseX(rb), 0, "black", "black", getRadiobaseId(rb));
+        Texto text = criaTexto("0", getRadiobaseX(rb), 0, "black", "black", getRadiobaseId(rb));
         insert(listasQry[4], text);
 
         desalocaRBPonto(rb);
@@ -420,7 +420,6 @@ void cbq(QuadTree treeObjeto[], double x, double y, double r, char corb[], FILE*
         {
             setQuadraCstrk(info, corb);
             fprintf(saida, "%s\n", getQuadraCep(info));
-            
         }
 
         node = getNext(node);
@@ -481,7 +480,7 @@ void car(QuadTree treeObjeto[], double x, double y, double w, double h, FILE* sa
     TextoNumerico textNum = criaTextoNumerico(x, 0, "black", "black", areaTotal);
     insert(listasQry[0], textNum);
 
-    Retangulo ret = criaRetangulo(0, w, h, x ,y , "2.5", "black", "none");
+    Retangulo ret = criaRetangulo("0", w, h, x ,y , "2.5", "black", "none");
     insert(listasQry[1], ret);
 
     Linha lin = criaLinha(x, y, x, 0, "black");
@@ -767,63 +766,129 @@ void m(FILE* saida, QuadTree treeObjeto[], char cep[])
     removeList(lista, NULL);
 }
 
-// void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], char cpf[])
+void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], char cpf[])
+{
+    Info pessoa = getValue(hash[2], cpf);
+    Info endereco = getValue(hash[3], cpf);
+
+    if(pessoa == NULL || endereco == NULL)
+    {
+        fprintf(saida, "NAO HA INFORMACOES PARA ESTE CPF\n");
+        printf("CPF INVALIDO\n");
+        return;
+    }
+
+        fprintf(saida, "Nome:%s %s\nCPF: %s\nNascimento: %s\nSexo: %s\nCEP: %s Face: %s Numero: %s Complemento: %s\n", getPessoaNome(pessoa),
+        getPessoaCpf(pessoa), getPessoaNascimento(pessoa), getPessoaSexo(pessoa), getAddressCep(endereco), getAddressFace(endereco),
+        getAddressNum(endereco), getAddressComplemento(endereco));
+
+        Linha linha = criaLinha(getPontoX(getAddressPonto(endereco)), getPontoY(getAddressPonto(endereco)), getPontoX(getAddressPonto(endereco)), 0, "black");
+        insert(listaQry[2], linha);
+
+
+    char texto [1150];
+    sprintf(texto, "CPF: %s Nome: %s CEP: %s Face: %s Num: %lf", getAddressCpf(endereco), getPessoaNome(pessoa),
+    getAddressCep(endereco), getAddressFace(endereco), getAddressNum(endereco));
+
+    Texto text = criaTexto("0", getPontoX(getAddressPonto(endereco)), 0, "black", "black", texto);
+    insert(listaQry[4], text);
+}
+
+void de(QuadTree treeObjeto[], FILE* saida, Lista listaObjeto[], HashTable hash[], char cnpj[])
+{
+    QtNo no;
+    Info info;
+
+    no = getNoById(treeObjeto[9], cnpj);
+
+    if(no == NULL)
+    {
+        fprintf(saida,"ESTABELECIMENTO COMERCIAL INEXISTENTE\n");
+        printf("COMERCIO INEXISTENTE\n");
+        return;
+    }
+
+    info = getInfoQt(treeObjeto[9], no);
+
+    fprintf(saida, "Nome: %s CPF: %s\nCNPJ: %s\nFace: %s Num: %lf CODT: %s\n", getComercioNome(info),
+    getComercioCpf(info), getComercioCnpj(info), getComercioFace(info), getComercioNum(info), getComercioCodt(info));
+
+}
+
+void mud(QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], FILE* saida, char cpf[], char cep[], char face[], char complemento[], double num)
+{
+    Info pessoa = getValue(hash[2], cpf);
+    Info endereco = getValue(hash[3], cpf);
+    Ponto p;
+
+    if(pessoa == NULL || endereco == NULL)
+    {
+        fprintf(saida, "MORADOR NAO ENCONTRADO\n");
+        printf("MORADOR NAO ENCONTRADO\n");
+        return;
+    }
+
+    fprintf(saida, "DADOS DO MORADOR\nNome: %s %s CPF: %s\nNascimento: %s Sexo: %s\n", getPessoaNome(pessoa),
+    getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaSexo(pessoa), getPessoaSexo(pessoa));
+    fprintf(saida, "ENDERECO ANTIGO\nCEP: %s\nFace: %s Num:%lf Complemento: %s", getAddressCep(endereco),
+    getAddressFace(endereco), getAddressNum(endereco), getAddressComplemento(endereco));
+    fprintf(saida, "ENDERECO ATUAL\nCEP: %s\nFace: %s Num: %lf Complemento: %s", cep, face, num, complemento);
+
+    p = getAddressPonto(endereco);
+    Linha linha = criaLinha(getPontoX(getAddressPonto(endereco)), getPontoY(getAddressPonto(endereco)), getPontoX(p), getPontoY(p), "red");
+    insert(listaQry[2], linha);
+
+    Circulo circulo = criaCirculo("0", 8, getPontoX(getAddressPonto(endereco)), getPontoY(getAddressPonto(endereco)),"3", "white", "red");
+    insert(listaQry[3], circulo);
+
+    Circulo circ = criaCirculo("0", 8, getPontoX(p), getPontoY(p), "3", "white", "blue");
+    insert(listaQry[3], circ);
+
+    setAddressCep(endereco, cep);
+    setAddressNum(endereco, num);
+    setAddressPonto(endereco, p);
+    setAddressFace(endereco, face);
+    setAddressComplemento(endereco, complemento);
+}
+
+void dmprbt(QuadTree treeObjeto[], char t, char saida[], char sfx[])
+{
+    int i;
+
+    switch(t)
+    {
+        case 'q':
+            i = 3;
+            break;
+        case 'h':
+            i = 4;
+            break;
+        case 's':
+            i = 5;
+            break;
+        case 't':
+            i = 6;
+            break;
+        default:
+            printf("INVALIDO\n");
+            break;
+    }
+
+    char* pathSvg = malloc((6 + strlen(sfx) + strlen(saida))*sizeof(char));
+    sprintf(pathSvg, "%s-%s.svg", saida, sfx);
+    FILE* svg = fopen(pathSvg, "w");
+    iniciaSvg(svg);
+    finalizaSvg(svg);
+    free(pathSvg);
+}
+
+// void epgl(QuadTree treeObjeto[], FILE* saida, Lista listaQry[], HashTable hash[], double x, double y, double q, double h, char tp[])
 // {
-//     Info pessoa = getValue(hash[2], cpf);
-//     Info endereco = getValue(hash[3], cpf);
+//     Lista lista = nosDentroRetanguloQt(treeObjeto[], x, y, x+w, y+h);
+//     Info pessoa;
+//     Info comercio;
+//     QtInfo info;
+//     No node;
+//     Ponto p;
 
-//     if(pessoa == NULL || endereco == NULL)
-//     {
-//         fprintf(saida, "NAO HA INFORMACOES PARA ESTE CPF\n");
-//         printf("CPF INVALIDO\n");
-//         return;
-//     }
-
-
-//     char texto [1150];
-//     sprintf(texto, "CPF: %s Nome: %s CEP: %s Face: %s Num: %lf", getAddressCpf(endereco), getPessoaNome(pessoa),
-//     getAddressCep(endereco), getAddressFace(endereco), getAddressNum(endereco));
-
-//     Texto text = criaTexto("0", getPontoX(getAddressPonto(endereco)), 0, "black", "black", texto);
-//     insert(listaQry[4], text);
-// }
-
-// void de(QuadTree treeObjeto[], FILE* saida, Lista listaObjeto[], HashTable hash[], char cnpj[])
-// {
-//     QtNo no;
-//     Info info;
-
-//     no = getNoById(treeObjeto[9], cnpj);
-
-//     if(no == NULL)
-//     {
-//         fprintf(saida,"ESTABELECIMENTO COMERCIAL INEXISTENTE\n");
-//         printf("COMERCIO INEXISTENTE\n");
-//         return;
-//     }
-
-//     info = getInfoQt(treeObjeto[9], no);
-
-//     fprintf(saida, "Nome: %s CPF: %s\nCNPJ: %s\nFace: %s Num: %lf CODT: %s\n", getComercioNome(info),
-//     getComercioCpf(info), getComercioCnpj(info), getComercioFace(info), getComercioNum(info), getComercioCodt(info));
-
-// }
-
-// void mud(QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], FILE* saida, char cpf[], char cep[], char face[], char complemento[], double num)
-// {
-//     Info pessoa = getValue(hash[2], cpf);
-//     Info endereco = getValue(hash[3], cpf);
-
-//     if(pessoa == NULL || endereco == NULL)
-//     {
-//         fprintf(saida, "MORADOR NAO ENCONTRADO\n");
-//         printf("MORADOR NAO ENCONTRADO\n");
-//         return;
-//     }
-
-//     fprintf(saida, "DADOS DO MORADOR\nNome: %s %s CPF: %s\nNascimento: %s Sexo: %s\n", getPessoaNome(pessoa),
-//     getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaSexo(pessoa), getPessoaSexo(pessoa));
-//     fprintf(saida, "ENDERECO ANTIGO\nCEP: %s\nFace: %s Num:%lf Complemento: %s", getAddressCep(endereco),
-//     getAddressFace(endereco), getAddressNum(endereco), getAddressComplemento(endereco));
-//     fprintf(saida, "ENDERECO ATUAL\nCEP: %s\nFace: %s Num: %lf Complemento: %s", cep, face, num, complemento);
 // }

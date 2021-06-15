@@ -1,6 +1,7 @@
 #ifndef __QRY_H
 #define __QRY_H
 
+#include "svg.h"
 #include "quadtree.h"
 #include "lista.h"
 #include "retangulo.h"

@@ -197,5 +197,15 @@ void lerQry (char saidaQry[], QuadTree treeObjeto[], HashTable hashT[], char arq
             fscanf(qry, "%s", cpf);
         }
     }
+
+    gerarSvgQry(treeObjeto, arqSaidaSvg, listasQry);
+
+    finalizaSvg(arqSaidaSvg);
+
+    fclose(saida);
+    fclose(qry);
+    fclose(arqSaidaSvg);
+    free(saidaSvg);
+    free(saidaTxt);
 }
 

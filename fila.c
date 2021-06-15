@@ -17,7 +17,7 @@ typedef struct Fila
 
 Fila criaFila()
 {
-    StructFila *f = (StructFila*) malloc(sizeof(StructFila));
+    StructFila* f = (StructFila*) malloc(sizeof(StructFila));
     f->firstQueue = NULL;
     f->lastQueue = NULL;
 

@@ -325,28 +325,28 @@ QtInfo removeNoQt(QuadTree qt,QtNo pNo)
     StructTree *tree = (StructTree*)qt;
     StructNode *no = (StructNode*) pNo;
     StructNode *aux;
-    StructNode *eixos[4];
-    StructNode *eixos2[4];
     QtInfo info;
     Fila fila = criaFila();
-    
-        eixos[0] = no->NE;
-        eixos[1] = no->NW;
-        eixos[2] = no->SE;
-        eixos[3] = no->SW;
-
-        eixos2[0] = no->parent->NE;
-        eixos2[1] = no->parent->NW;
-        eixos2[2] = no->parent->SE;
-        eixos2[3] = no->parent->SW;
 
     if(no->parent == NULL)
     {
-       for(int i; i < 4; i++)
+       for(int i=0; i < 4; i++)
        {
-            if(eixos[i] != NULL)
+            if(no->NE != NULL)
             {
-                insereFila(fila, eixos[i]);
+                insereFila(fila, no->NE);
+            }
+            if(no->NW != NULL)
+            {
+                insereFila(fila, no->NW);
+            }
+            if(no->SE != NULL)
+            {
+                insereFila(fila, no->SE);
+            }
+            if(no->SW != NULL)
+            {
+                insereFila(fila, no->SW);
             }
        }
 
@@ -354,26 +354,78 @@ QtInfo removeNoQt(QuadTree qt,QtNo pNo)
     }
     else
     {
-        for(int i; i < 4; i++)
+        for(int i=0; i < 4; i++)
         {
-            if(eixos[i] != NULL)
+            if(no->NE != NULL)
             {
-                if(eixos2[1] != NULL)
+                if(no->parent->NE != NULL)
                 {
-                    insereFila(fila, eixos[i]);
+                    insereFila(fila, no->NE);
                 }
                 else
                 {
-                    eixos2[i] = eixos[i];
+                    no->parent->NE = no->NE;
+                    no->NE->parent = no->parent;
                 }      
-            }   
+            }
+            if(no->NW != NULL)
+            {
+                if(no->parent->NW != NULL)
+                {
+                    insereFila(fila, no->NW);
+                }
+                else
+                {
+                    no->parent->NW = no->NW;
+                    no->NW->parent = no->parent;
+                }      
+            } 
+            if(no->SE!= NULL)
+            {
+                if(no->parent->SE != NULL)
+                {
+                    insereFila(fila, no->SE);
+                }
+                else
+                {
+                    no->parent->SE = no->SE;
+                    no->SE->parent = no->parent;
+                }      
+            } 
+            if(no->SW != NULL)
+            {
+                if( no->parent->SW != NULL)
+                {
+                    insereFila(fila, no->SW);
+                }
+                else
+                {
+                     no->parent->SW = no->SW;
+                     no->SW->parent = no->parent;
+                }      
+            } 
         }
 
-        for(int i; i < 4; i++)
+        for(int i = 0; i < 4; i++)
         {
-            if(eixos2[i] == no)
+            if(no->parent->NE == no)
             {
-                eixos2[i] = NULL;
+                no->parent->NE = NULL;
+                break;
+            }
+            if(no->parent->NW == no)
+            {
+                no->parent->NW = NULL;
+                break;
+            }
+            if(no->parent->SE == no)
+            {
+                no->parent->SE = NULL;
+                break;
+            }
+            if(no->parent->SW == no)
+            {
+                no->parent->SW = NULL;
                 break;
             }
         }
@@ -381,41 +433,36 @@ QtInfo removeNoQt(QuadTree qt,QtNo pNo)
 
     while(!filaIsEmpty(fila))
     {
-        aux = removeFila(fila);
+        aux = retiraFila(fila);
 
-        for(int i; i < 4; i++)
+        if(aux != NULL)
         {
-            if(aux->NE != NULL)
+            for(int i=0; i < 4; i++)
             {
-                insereFila(aux->NE, fila);
+                if(aux->NE != NULL)
+                {
+                    insereFila(fila, aux->NE);
+                }
+                if(aux->NW != NULL)
+                {
+                    insereFila(fila, aux->NW);
+                }
+                if(aux->SE != NULL)
+                {
+                    insereFila(fila, aux->SE);
+                }
+                if(aux->SW != NULL)
+                {
+                    insereFila(fila, aux->SW);
+                }
             }
-            if(aux->NW != NULL)
-            {
-                insereFila(aux->NW, fila);
-            }
-            if(aux->SE != NULL)
-            {
-                insereFila(aux->SE, fila);
-            }
-            if(aux->SW != NULL)
-            {
-                insereFila(aux->SW, fila);
-            }
+            insereQt(tree, aux->ponto, aux);
         }
-
-        insereQt(tree, aux->ponto, aux->info);
-      free(aux);
+        else
+        {
+            break;
+        }
     }
-
-        no->NE = eixos[0];
-        no->NW = eixos[1];
-        no->SE = eixos[2];
-        no->SW = eixos[3];
-
-        no->parent->NE = eixos2[0];
-        no->parent->NW = eixos2[1];
-        no->parent->SE = eixos2[2];
-        no->parent->SW = eixos2[3];
 
     info = getInfoQt(tree, no);
     free(no);
