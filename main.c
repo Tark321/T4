@@ -26,12 +26,12 @@ char *concatenacao(char dir_entrada[])
 
 int main (int argc, char *argv[])
 {
-   QuadTree treeObjeto[11];
+   QuadTree treeObjeto[12];
 
-    char* (*getId[11])(void*) = {getCirculoI, getRetanguloI, getTextoI, getQuadraCep, getHidranteId, getSemaforoId,
-    getRadiobaseId, NULL, getComercioCnpj, NULL, NULL};
+    char* (*getId[12])(void*) = {getCirculoI, getRetanguloI, getTextoI, getQuadraCep, getHidranteId, getSemaforoId,
+    getRadiobaseId, NULL, getComercioCnpj, NULL, NULL, getCasosCEP};
 
-    for(int i = 0; i < 11; i++)
+    for(int i = 0; i < 12; i++)
     {
         treeObjeto[i] = criaQt(getId[i]);
     }
@@ -269,20 +269,25 @@ int main (int argc, char *argv[])
  free(arqEc);
  free(arqPm);
 
-   for (int i = 0; i < 11; i++)
+   for(int i = 0; i < 12; i++)
     {
         desalocaQt(treeObjeto[i]);
 
     }  
 
-    for (int i = 0; i < 12; i++)
+    for(int i = 0; i < 14; i++)
     {
         removeList(listaObjeto[i], NULL);
     }
 
-    for (int i = 0; i < 11; i++)
+    for(int i = 0; i < 11; i++)
     {
         removeList(listasQry[i], NULL);
+    }
+
+    for(int i = 0; i < 4; i++)
+    {
+        deleteHTable(listaHash[i]);
     }
     
 }

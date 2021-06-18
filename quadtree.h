@@ -132,4 +132,6 @@ QtNo getNoById(QuadTree qt, char* chave);
 
 QtInfo getInfoByIdQt(QuadTree qt, char* chave);
 
+void desenharQt(QuadTree qt, FILE* svg);
+
 #endif // QUADTREE_H_INCLUDED

@@ -37,7 +37,7 @@ void pnt (QuadTree treeObjeto[], char j[], char corb[], char corp[], FILE* saida
 
 void delf(QuadTree treeObjeto[], char j[], FILE* saida);
 
-void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, Lista listasQry[]);
+void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, Lista listasQry[], FILE* svg);
 
 void del (QuadTree treeObjeto[], char id[], FILE* saida, Lista listasQry[]);
 
@@ -55,4 +55,15 @@ void ci(FILE* saida, QuadTree treeObjeto[], double x, double y, double r, Lista 
 
 void m(FILE* saida, QuadTree treeObjeto[], char cep[]);
 
+void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], char cpf[]);
+
+void de(QuadTree treeObjeto[], FILE* saida, HashTable hash[], char cnpj[]);
+
+void mud(QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], FILE* saida, char cpf[], char cep[], char face[], char complemento[], double num);
+
+void dmprbt(QuadTree treeObjeto[], char tipo, char saida[], char sfx[]);
+
+void epgl(QuadTree treeObjeto[], FILE* saida, Lista listaQry[], HashTable hash[], double x, double y, double w, double h, char tipo[]);
+
+void catac(QuadTree treeObjeto[], FILE* saida, double x, double y, double r, Lista listaQry[], HashTable hash[]);
 #endif

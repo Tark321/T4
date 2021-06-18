@@ -52,7 +52,7 @@ void lerPm(char arqPm[], QuadTree treeObjeto[], Lista listaObjeto[], HashTable h
         }
     }
 
-    balancearQt(treeObjeto[10], listaObjeto[11], getAddressPonto, swapAddress);
+    balancearQt(treeObjeto[10], listaObjeto[12], getAddressPonto, swapAddress);
 
     for(No node = getFirst(listaObjeto[12]); node != NULL; node = getNext(node))
     {

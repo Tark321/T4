@@ -26,4 +26,6 @@ double getComercioNum(Comercio comercio);
 
 void swapComercio(Comercio c1, Comercio c2);
 
+void desalocaComercio(Comercio comercio);
+
 #endif

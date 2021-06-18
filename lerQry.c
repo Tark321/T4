@@ -50,6 +50,9 @@ void lerQry (char saidaQry[], QuadTree treeObjeto[], HashTable hashT[], char arq
     double w, h;
     char face[2];
     char cep [20];
+    char aux[20];
+    char sfx[20];
+    char t;
     double num;
     double n;
 
@@ -120,7 +123,7 @@ void lerQry (char saidaQry[], QuadTree treeObjeto[], HashTable hashT[], char arq
                 strcpy(identificacao, parametroOpcional);
                 fprintf(saida,"dq %s %lf\n",identificacao, r);
             }
-            dq(treeObjeto, saida, identificacao, r, ident, listasQry);
+            dq(treeObjeto, saida, identificacao, r, ident, listasQry, arqSaidaSvg);
         }
         else if(strcmp(tipo, "del")==0)
         {
@@ -174,27 +177,36 @@ void lerQry (char saidaQry[], QuadTree treeObjeto[], HashTable hashT[], char arq
         {
             fscanf(qry, "%s", cpf);
             fprintf(saida,"%s %s\n",tipo, cpf);
+            dm(saida, treeObjeto, listasQry, hashT, cpf);
         }
         else if(strcmp(tipo, "de?") == 0)
         {
             fscanf(qry, "%s", cnpj);
+            de(treeObjeto, saida, hashT, cnpj);
             
         }
         else if(strcmp(tipo, "mud") == 0)
         {
             fscanf(qry, "%s %s %s %lf %s", cpf, cep, face, &num, complemento);
+            mud(treeObjeto, listasQry, hashT, saida, cpf, cep, face, complemento, num);
         }
         else if(strcmp(tipo, "dmprbt") == 0)
         {
-            fscanf(qry, "%s", cpf);
+            fscanf(qry, "%c %s", &t, sfx);
+            fprintf(saida, "%s: %c %s\n", tipo, t, sfx);
+            dmprbt(treeObjeto, t, saidaQry, sfx);
         }
         else if(strcmp(tipo, "eplg?") == 0)
         {
-            fscanf(qry, "%s", cpf);
+            fscanf(qry, "%s %lf %lf %lf %lf", aux, &x, &y, &w, &h);
+            fprintf(saida, "%s: %s %lf %lf %lf %lf\n", tipo, aux, x, y, w, h);
+            epgl(treeObjeto, saida, listasQry, hashT, x, y, w, h, aux);
         }
         else if(strcmp(tipo, "catac") == 0)
         {
-            fscanf(qry, "%s", cpf);
+            fscanf(qry, "%lf %lf %lf", &x, &y, &r);
+            fprintf(saida, "%s: %lf %lf %lf\n", tipo, x, y, r);
+            catac(treeObjeto, saida, x, y, r, listasQry, hashT);
         }
     }
 

@@ -251,8 +251,8 @@ void delf(QuadTree treeObjeto[], char j[], FILE* saida)
     }
 }
 
-void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, Lista listasQry[])
-{printf("entrou no dq\n");
+void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, Lista listasQry[], FILE* svg)
+{
     Ponto p;
     Info info;
     double x;
@@ -313,9 +313,8 @@ void dq(QuadTree treeObjeto[], FILE* saida, char id[], double r, int ident, List
         {
             if(ident)
             {
-                Retangulo r = criaRetangulo("0", getQuadraW(info), getQuadraH(info), getQuadraX(info), getQuadraY(info),
-                "1", "olive", "beige");
-                insert(listasQry[6], r);
+                fprintf(svg, "\t<rect x=\"%lf\" y=\"%lf\" wifth=\"%lf\" heigth=\"%lf\" fill=\"beige\" stroke=\"olive\" stroke-width=\"%s\" rx=\"20\"/>", 
+                getPontoX(p), getPontoY(p), w, h, getQuadraSw(info));
             }
 
             fprintf(saida, "QUADRA %s EXCLUIDA COM SUCESSO\n", getQuadraCep(info));
@@ -497,22 +496,22 @@ void cv(QuadTree treeObjeto[], double n, char cep[], char face[], double num, Li
     {
         Info q = getInfoByIdQt(treeObjeto[3], cep);
 
-        if(strcmp(face, "N"))
+        if(strcmp(face, "N") == 0)
         {
             x = getQuadraX(q) + num;
             y = getQuadraY(q) + getQuadraH(q);
         }
-        else if(strcmp(face, "S"))
+        else if(strcmp(face, "S") == 0)
         {
             x = getQuadraX(q) + num;
             y = getQuadraY(q);
         }
-        else if(strcmp(face, "L"))
+        else if(strcmp(face, "L") == 0)
         {
             x = getQuadraX(q);
             y = getQuadraY(q) + num;
         }
-        else if(strcmp(face, "O"))
+        else if(strcmp(face, "O") == 0)
         {
             x = getQuadraX(q) + getQuadraW(q);
             y = getQuadraY(q) + num;
@@ -650,7 +649,7 @@ void ci(FILE* saida, QuadTree treeObjeto[], double x, double y, double r, Lista 
         fig = getInfoQt(treeObjeto[10], getInfo(node));
         ponto = getCasosPonto(fig);
         insert(lista, ponto);
-        fprintf(saida,"X : %lf Y : %lf\n", getPontoX(fig),getPontoY(fig));
+        fprintf(saida,"X : %lf Y : %lf\n", getPontoX(fig), getPontoY(fig));
         n += getCasosN(fig);
 
     }
@@ -674,7 +673,7 @@ void ci(FILE* saida, QuadTree treeObjeto[], double x, double y, double r, Lista 
     }
     else
     {
-        removeList(lista, 0);
+        removeList(lista, NULL);
     }
 
     area = obterArea(casos);
@@ -778,8 +777,8 @@ void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], 
         return;
     }
 
-        fprintf(saida, "Nome:%s %s\nCPF: %s\nNascimento: %s\nSexo: %s\nCEP: %s Face: %s Numero: %s Complemento: %s\n", getPessoaNome(pessoa),
-        getPessoaCpf(pessoa), getPessoaNascimento(pessoa), getPessoaSexo(pessoa), getAddressCep(endereco), getAddressFace(endereco),
+        fprintf(saida, "Nome:%s %s\nCPF: %s\nNascimento: %s\nSexo: %s\nCEP: %s Face: %s Numero: %lf Complemento: %s\n", getPessoaNome(pessoa),
+        getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaNasc(pessoa), getPessoaSexo(pessoa), getAddressCep(endereco), getAddressFace(endereco),
         getAddressNum(endereco), getAddressComplemento(endereco));
 
         Linha linha = criaLinha(getPontoX(getAddressPonto(endereco)), getPontoY(getAddressPonto(endereco)), getPontoX(getAddressPonto(endereco)), 0, "black");
@@ -794,7 +793,7 @@ void dm(FILE* saida, QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], 
     insert(listaQry[4], text);
 }
 
-void de(QuadTree treeObjeto[], FILE* saida, Lista listaObjeto[], HashTable hash[], char cnpj[])
+void de(QuadTree treeObjeto[], FILE* saida, HashTable hash[], char cnpj[])
 {
     QtNo no;
     Info info;
@@ -851,11 +850,11 @@ void mud(QuadTree treeObjeto[], Lista listaQry[], HashTable hash[], FILE* saida,
     setAddressComplemento(endereco, complemento);
 }
 
-void dmprbt(QuadTree treeObjeto[], char t, char saida[], char sfx[])
+void dmprbt(QuadTree treeObjeto[], char tipo, char saida[], char sfx[])
 {
     int i;
 
-    switch(t)
+    switch(tipo)
     {
         case 'q':
             i = 3;
@@ -871,24 +870,188 @@ void dmprbt(QuadTree treeObjeto[], char t, char saida[], char sfx[])
             break;
         default:
             printf("INVALIDO\n");
-            break;
+            return;
     }
 
+    printf("%d\n", i);
     char* pathSvg = malloc((6 + strlen(sfx) + strlen(saida))*sizeof(char));
     sprintf(pathSvg, "%s-%s.svg", saida, sfx);
     FILE* svg = fopen(pathSvg, "w");
     iniciaSvg(svg);
+    //desenharQt(treeObjeto[i], svg);
     finalizaSvg(svg);
     free(pathSvg);
 }
 
-// void epgl(QuadTree treeObjeto[], FILE* saida, Lista listaQry[], HashTable hash[], double x, double y, double q, double h, char tp[])
-// {
-//     Lista lista = nosDentroRetanguloQt(treeObjeto[], x, y, x+w, y+h);
-//     Info pessoa;
-//     Info comercio;
-//     QtInfo info;
-//     No node;
-//     Ponto p;
+void epgl(QuadTree treeObjeto[], FILE* saida, Lista listaQry[], HashTable hash[], double x, double y, double w, double h, char tipo[])
+{
+    Lista lista = nosDentroRetanguloQt(treeObjeto[9], x, y, x+w, y+h);
+    Info pessoa;
+    Info comercio;
+    QtInfo info;
+    No node;
+    Ponto p;
 
-// }
+    if(lista == NULL)
+    {
+        printf("COMANDO EPGL NAO PODE SER RODADO\n");
+        fprintf(saida, "ERRO NO COMANDO EPGL\n");
+        return;
+    }
+
+    if(tipo != NULL)
+    {
+        if(strcmp(tipo, "*") == 0)
+        {
+            for(node = getFirst(lista); node != NULL; node = getNext(node))
+            {
+                comercio = getInfo(node);
+                info = getInfoQt(treeObjeto[9], comercio);
+                p = getComercioPonto(info);
+                pessoa = getValue(hash[2], getComercioCpf(info));
+
+                fprintf(saida, "COMERCIO\n Nome: %s CNPJ: %s\nCODT: %s CEP: %s Face: %s Numero:%lf", getComercioNome(info),
+                getComercioCnpj(info), getComercioCodt(info), getComercioCep(info), getComercioFace(info), getComercioNum(info));
+
+                if(pessoa == NULL)
+                {
+                    printf("COMANDO EPGL NAO PODE SER TERMINADO");
+                    fprintf(saida, "PESSOA PARA ESTE ESTABELECIMENTO NAO ENCONTRADA");
+                    return;
+                }
+                else
+                {
+                    fprintf(saida, "DONO COMERCIO\nNome completo: %s %s\nCPF: %s Data de Nascimento: %s Sexo: %s", getPessoaNome(pessoa),
+                    getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaNasc(pessoa), getPessoaSexo(pessoa));
+
+                    Circulo circulo = criaCirculo("0", 7, getPontoX(p), getPontoY(p), "3", "black", "blue");
+                    insert(listaQry[3], circulo);
+                }
+
+            }
+        }
+        else
+        {
+            for(node = getFirst(lista); node != NULL; node = getNext(node))
+            {
+                comercio = getInfo(node);
+                info = getInfoQt(treeObjeto[9], comercio);
+                p = getComercioPonto(info);
+                pessoa = getValue(hash[2], getComercioCpf(info));
+
+                if(strcmp(getComercioCodt(comercio), tipo) == 0)
+                {
+                    fprintf(saida, "COMERCIO\n Nome: %s CNPJ: %s\nCODT: %s CEP: %s Face: %s Numero:%lf", getComercioNome(info),
+                    getComercioCnpj(info), getComercioCodt(info), getComercioCep(info), getComercioFace(info), getComercioNum(info));
+
+                    if(pessoa == NULL)
+                    {
+                        printf("COMANDO EPGL NAO PODE SER TERMINADO");
+                        fprintf(saida, "PESSOA PARA ESTE ESTABELECIMENTO NAO ENCONTRADA");
+                        return;
+                    }
+                    else
+                    {
+                        fprintf(saida, "DONO COMERCIO\nNome completo: %s %s\nCPF: %s Data de Nascimento: %s Sexo: %s", getPessoaNome(pessoa),
+                        getPessoaSobre(pessoa), getPessoaCpf(pessoa), getPessoaNasc(pessoa), getPessoaSexo(pessoa));
+
+                        Circulo circulo = criaCirculo("0", 7, getPontoX(p), getPontoY(p), "3", "black", "blue");
+                        insert(listaQry[3], circulo);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        return;
+    }
+
+}
+
+void catac(QuadTree treeObjeto[], FILE* saida, double x, double y, double r, Lista listaQry[], HashTable hash[])
+{
+    Lista q = nosDentroCirculoQt(treeObjeto[3], x, y, r); 
+    for(No no = getFirst(q); no != NULL; no = getNext(no))
+    {
+        Info quadra = getInfoQt(treeObjeto[3], getInfo(no));
+        Ponto p = getQuadraPonto(quadra);
+
+        if(retInternoCirc(getPontoX(p), getPontoY(p), getQuadraW(quadra), getQuadraH(quadra), x, y, r))
+        {
+            fprintf(saida, "QUADRA\n");
+            fprintf(saida, "\tCEP: %s\nX: %lf Y: %lf W: %lf H:%lf\n", getQuadraCep(quadra), getQuadraX(quadra), 
+            getQuadraY(quadra), getQuadraW(quadra), getQuadraH(quadra));
+            deleteItemTable(hash[0], getQuadraCep(quadra));
+            Info info = removeNoQt(treeObjeto[3], getInfo(no));
+            desalocaQuadraPonto(info);
+        }
+
+    }
+    removeList(q, NULL);
+
+    Lista s = nosDentroCirculoQt(treeObjeto[5], x, y, r);
+    
+    for(No no = getFirst(s); no != NULL; no = getNext(no))
+    {
+        Info sema = getInfoQt(treeObjeto[5], getInfo(no));
+        fprintf(saida, "SEMAFORO\n");
+        fprintf(saida, "\tID: %s\nX: %lf Y: %lf", getSemaforoId(sema), getSemaforoX(sema), getSemaforoY(sema));
+        Info info = removeNoQt(treeObjeto[5], getInfo(no));
+        desalocaSemaPonto(info);
+
+    }
+    removeList(s, NULL);
+
+    Lista h = nosDentroCirculoQt(treeObjeto[4], x, y, r);
+    
+    for(No no = getFirst(h); no != NULL; no = getNext(no))
+    {
+        Info hidra = getInfoQt(treeObjeto[4], getInfo(no));
+        fprintf(saida, "HIDRANTE\n");
+        fprintf(saida, "\tID: %s\nX: %lf Y: %lf", getHidranteId(hidra), getHidranteX(hidra), getHidranteY(hidra));
+        Info info = removeNoQt(treeObjeto[4], getInfo(no));
+        desalocaHidraPonto(info);
+    }
+    removeList(h, NULL);
+
+    Lista rb = nosDentroCirculoQt(treeObjeto[6], x, y, r);
+    
+    for(No no = getFirst(rb); no != NULL; no = getNext(no))
+    {
+        Info radioB = getInfoQt(treeObjeto[6], getInfo(no));
+        fprintf(saida, "RADIO BASE\n");
+        fprintf(saida, "\tID: %s\nX: %lf Y: %lf", getRadiobaseId(radioB), getRadiobaseX(radioB), getRadiobaseY(radioB));
+        Info info = removeNoQt(treeObjeto[6], getInfo(no));
+        desalocaRBPonto(info);
+    }
+    removeList(rb, NULL);
+
+    Lista  a = nosDentroCirculoQt(treeObjeto[10], x, y, r);
+    for(No no = getFirst(a); no != NULL; no = getNext(no))
+    {
+        Info mora = getInfoQt(treeObjeto[10], getInfo(no));
+        Ponto p = getAddressPonto(mora);
+        fprintf(saida, "MORADOR\n");
+        fprintf(saida, "\tCPF: %s\nCEP: %s Num: %lf Complemento: %s Face: %s\nX: %lf y: %lf", getAddressCpf(mora),
+        getAddressCep(mora), getAddressNum(mora), getAddressComplemento(mora), getAddressFace(mora), 
+        getPontoX(p), getPontoY(p));
+        deleteItemTable(hash[3], getAddressCpf(mora));
+        Info info = removeNoQt(treeObjeto[10], getInfo(no));
+        desalocaAddress(info);
+    }
+    removeList(a, NULL);
+
+    Lista c = nosDentroCirculoQt(treeObjeto[9], x, y, r);
+    for(No no = getFirst(c); no != NULL; no = getNext(no))
+    {
+        Info com = getInfoQt(treeObjeto[9], getInfo(no));
+        fprintf(saida, "COMERCIO\n");
+        fprintf(saida, "\tNome: %s CPF: %s\nCEP: %s CNPJ: %s", getComercioNome(com), getComercioCpf(com), 
+        getComercioCep(com), getComercioCnpj(com));
+        Info info = removeNoQt(treeObjeto[9], getInfo(no));
+        desalocaComercio(info);
+
+    }
+    removeList(c, NULL);
+}

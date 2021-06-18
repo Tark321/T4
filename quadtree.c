@@ -5,6 +5,9 @@
 #include "auxiliar.h"
 #include "quadtree.h"
 
+#define dx 250
+#define dy 250
+
 typedef struct no
 {
     QtInfo info;
@@ -258,61 +261,68 @@ QtNo insereQt(QuadTree qt, Ponto p, QtInfo pInfo)
     {
         auxP = aux->ponto;
 
-        if(getPontoX(p) >= getPontoX(auxP))
+        if(auxP != NULL)
         {
-            if(getPontoY(p) >= getPontoY(auxP))
+            if(getPontoX(p) >= getPontoX(auxP))
             {
-                if(aux->NE == NULL)
+                if(getPontoY(p) >= getPontoY(auxP))
                 {
-                    aux->NE = no;
-                    no->parent = aux;              
+                    if(aux->NE == NULL)
+                    {
+                        aux->NE = no;
+                        no->parent = aux;              
+                    }
+                    else
+                    {
+                        aux = aux->NE;
+                    }  
                 }
                 else
                 {
-                    aux = aux->NE;
-                }  
+                    if(aux->SE == NULL)
+                    {
+                        aux->SE = no;
+                        no->parent = aux;
+                    }
+                    else
+                    {
+                        aux = aux->SE;
+                    }
+                    
+                }      
             }
             else
             {
-                if(aux->SE == NULL)
+                if(getPontoY(p) >= getPontoY(auxP))
                 {
-                    aux->SE = no;
-                    no->parent = aux;
+                    if(aux->NW == NULL)
+                    {
+                        aux->NW = no;
+                        no->parent = aux;
+                    }
+                    else
+                    {
+                        aux = aux->NW;
+                    }
+                    
                 }
                 else
                 {
-                    aux = aux->SE;
-                }
-                
-            }      
+                    if(no->SW == NULL)
+                    {
+                        aux->SW = no;
+                        no->parent = aux;
+                    }
+                    else
+                    {
+                        aux = aux->SW;
+                    }
+                }     
+            }
         }
         else
         {
-            if(getPontoY(p) >= getPontoY(auxP))
-            {
-                if(aux->NW == NULL)
-                {
-                    aux->NW = no;
-                    no->parent = aux;
-                }
-                else
-                {
-                    aux = aux->NW;
-                }
-                
-            }
-            else
-            {
-                if(no->SW == NULL)
-                {
-                    aux->SW = no;
-                    no->parent = aux;
-                }
-                else
-                {
-                    aux = aux->SW;
-                }
-            }     
+            break;
         }
     }
 
@@ -434,34 +444,23 @@ QtInfo removeNoQt(QuadTree qt,QtNo pNo)
     while(!filaIsEmpty(fila))
     {
         aux = retiraFila(fila);
-
-        if(aux != NULL)
+        if(aux->NE != NULL)
         {
-            for(int i=0; i < 4; i++)
-            {
-                if(aux->NE != NULL)
-                {
-                    insereFila(fila, aux->NE);
-                }
-                if(aux->NW != NULL)
-                {
-                    insereFila(fila, aux->NW);
-                }
-                if(aux->SE != NULL)
-                {
-                    insereFila(fila, aux->SE);
-                }
-                if(aux->SW != NULL)
-                {
-                    insereFila(fila, aux->SW);
-                }
-            }
-            insereQt(tree, aux->ponto, aux);
+            insereFila(fila, aux->NE);
         }
-        else
+        if(aux->NW != NULL)
         {
-            break;
+            insereFila(fila, aux->NW);
         }
+        if(aux->SE != NULL)
+        {
+            insereFila(fila, aux->SE);
+        }
+        if(aux->SW != NULL)
+        {
+            insereFila(fila, aux->SW);
+        }
+        insereQt(tree, aux->ponto, aux);
     }
 
     info = getInfoQt(tree, no);
@@ -588,7 +587,7 @@ QtNo getNoId(QuadTree qt, QtNo no, char* chave)
                 return aux;
             }
     }
-     if(node->SW != NULL)
+    if(node->SW != NULL)
     {
         aux = getNoId(qt,node->SW,chave);
 
@@ -600,6 +599,7 @@ QtNo getNoId(QuadTree qt, QtNo no, char* chave)
     
     return NULL;
 }
+
 QtNo getNoById(QuadTree qt, char* chave)
 {
     StructTree* tree = (StructTree*) qt;
@@ -674,14 +674,51 @@ QtInfo getInfoByIdQt(QuadTree qt, char* chave)
     return getInfoById(qt, tree->raiz, chave);
 }
 
-// void printNosQt(StructTree* qt, StructNode* no, FILE* svg, double* x, double y, Lista ant)
-// {
-//     if( no == NULL)
-//     {
-//         double aux = *x;
-//         if(ant != NULL)
-//         {
-//             insert(ant, criaPonto(aux, y-10))
-//         }
-//     }
-// }
+void printNosQt(StructTree* qt, StructNode* no, FILE* svg, double* x, double y, Lista ant)
+{
+    if( no == NULL)
+    {
+        printf("NO NAO PODE SER DESENHADO\n");
+        return;
+    }
+
+    Lista atual = create();
+    printNosQt(qt, no->NE, svg, x, y + dy, atual);
+    printNosQt(qt, no->NW, svg, x, y + dy, atual);
+
+    double aux = *x;
+
+    if(ant != NULL)
+    {
+        insert(ant, criaPonto(aux, y - 10));
+        fprintf(svg, "<rect x=\"%lf\" y=\"%lf\" width=\"240\" height=\"14\" fill=\"none\" stroke=\"blue\" />\n", aux, y - 10);
+        fprintf(svg, "\t<text x=\"%lf\" y=\"%lf\">%s: %lf, %lf</text>\n", aux, y, qt->fun(getInfoQt(qt, no)), getPontoX(no->ponto), getPontoY(no->ponto));
+    }
+    else
+    {
+        fprintf(svg, "<rect x=\"%lf\" y=\"%lf\" width=\"240\" height=\"14\" fill=\"none\" stroke=\"red\" />\n", aux, y - 10);
+        fprintf(svg, "\t<text x=\"%lf\" y=\"%lf\">%s: %lf, %lf</text>\n", aux, y, qt->fun(getInfoQt(qt, no)), getPontoX(no->ponto), getPontoY(no->ponto));
+        fprintf(svg, "\t<cricle cx=\"%lf\" cy=\"%lf\" \"5\" fill=\"tomato\" stroke=\"tomato\"/>\n", aux, y - 10);
+    }
+
+    printNosQt(qt, no->NE, svg, x, y + dy, atual);
+    printNosQt(qt, no->NW, svg, x, y + dy, atual);
+    printNosQt(qt, no->SE, svg, x, y + dy, atual);
+    printNosQt(qt, no->SW, svg, x, y + dy, atual);
+
+    for(No no = getFirst(atual); no != NULL; no = getNext(no))
+    {
+        fprintf(svg, "\t<line x1=\"%lf\" y1=\"%lf\" x2=\"%lf\" y2=\"%lf\" style=\"stroke: blue; stroke-width: 1\" />\n", aux, y + 2, getPontoX(getInfo(no)), getPontoY(getInfo(no)));
+    }
+
+    removeList(atual, free);
+}
+
+void desenharQt(QuadTree qt, FILE* svg)
+{
+    StructTree* tree = (StructTree*) qt;
+    double *x = (double*) malloc(sizeof(double));
+    *x = 0;
+    printNosQt(tree, tree->raiz, svg, x, dy, NULL);
+    free(x);
+}
